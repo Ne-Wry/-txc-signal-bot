@@ -4,7 +4,9 @@ import os
 
 TOKEN = os.getenv("TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-LEVEL = float(os.getenv("LEVEL", "0.20"))
+
+LEVELS = [float(x) for x in os.getenv("LEVELS", "0.20").split(",")]
+
 CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", "5"))
 
 def send_msg(text):
@@ -22,11 +24,12 @@ last_price = get_price()
 while True:
     price = get_price()
 
-    if last_price < LEVEL <= price:
-        send_msg(f"🚀 Пробой вверх TXC/USDT уровня {LEVEL}\nЦена: {price}")
+    for level in LEVELS:
+        if last_price < level <= price:
+            send_msg(f"🚀 Пробой вверх уровня {level}\nЦена: {price}")
 
-    if last_price > LEVEL >= price:
-        send_msg(f"📉 Пробой вниз TXC/USDT уровня {LEVEL}\nЦена: {price}")
+        if last_price > level >= price:
+            send_msg(f"📉 Пробой вниз уровня {level}\nЦена: {price}")
 
     last_price = price
     time.sleep(CHECK_INTERVAL)
